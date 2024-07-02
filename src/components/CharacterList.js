@@ -46,15 +46,17 @@ const CharacterList = () => {
     // Toggle favorite status of a character
     const toggleFavorite = (character) => {
         const isFavorite = favorites.some((fav) => fav.name === character.name); // Check if character is already a favorite
+        let updatedFavorites;
         if (isFavorite) {
-            setFavorites(favorites.filter((fav) => fav.name !== character.name)); // Remove from favorites
+            updatedFavorites = favorites.filter((fav) => fav.name !== character.name); // Remove from favorites
             showToast(`${character.name} removed from favorites.`);
         } else {
-            setFavorites([...favorites, character]); // Add to favorites
+            updatedFavorites = [...favorites, character]; // Add to favorites
             showToast(`${character.name} added to favorites!`);
         }
 
-        localStorage.setItem('favorites', JSON.stringify(favorites)); // Update localStorage with new favorites
+        setFavorites(updatedFavorites);
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Update localStorage with new favorites
         setIsAnimating(true); // Trigger animation
         setTimeout(() => setIsAnimating(false), 1000); // Turn off animation after 1 second
     };
@@ -127,6 +129,11 @@ const CharacterList = () => {
     // Render character list and pagination
     return (
         <Box p={4}>
+            <Link href="/favorites">
+                <Button mb={4} colorScheme="teal">
+                    View Favorites
+                </Button>
+            </Link>
             <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
                 {characters.map((character) => (
                     <Link href={`/character/${character.url.match(/\/(\d+)\//)[1]}`} key={character.name}>
@@ -153,7 +160,7 @@ const CharacterList = () => {
                                 borderTopRadius="lg"
                                 className="character-image"
                             />
-                            <Box p={4} style={{ border: "1px solid #d3d3d3", borderTop: "none",  backgroundColor:"whitesmoke" }}>
+                            <Box p={4} style={{ border: "1px solid #d3d3d3", borderTop: "none", backgroundColor: "whitesmoke" }}>
                                 <Text fontWeight="bold" fontSize="xl" mb={2}>{character.name}</Text>
                                 <Flex justify="space-between" alignItems="center">
                                     <Text fontSize="sm">Height: {character.height}cm</Text>
@@ -168,7 +175,7 @@ const CharacterList = () => {
                                             transform: isAnimating ? "scale(1.2)" : "none",
                                             transition: "transform 0.2s ease-in-out"
                                         }}
-                                        style={{ background : "green"}}
+                                        style={favorites.some((fav) => fav.name === character.name) ? {backgroundColor:"green"} : {backgroundColor: "whitesmoke", border: "1px solid #d3d3d3"}}
                                     />
                                 </Flex>
                                 <Button
