@@ -1,4 +1,3 @@
-// pages/character/[id].js
 
 // Import necessary modules from React, Next.js, Chakra UI, and Axios
 import { useEffect, useState } from "react";
